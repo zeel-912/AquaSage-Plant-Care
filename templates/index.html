@@ -51,7 +51,8 @@
     <h1>{{ title }}</h1>
     <p>Temperature: <span id="temperature"></span></p>
     <p>Humidity: <span id="humidity"></span></p>
-    <p>Soil Moisture: <span id="soilMoisture"></span></p>
+    <p>Soil Moisture Level: <span id="soilMoistureLevel"></span></p>
+    <p>Soil Moisture Status: <span id="soilMoistureStatus"></span></p>
     <p>Plant Health: <span id="plantHealth">{{ plant_health }}</span></p>
     
     <form id="imageForm" enctype="multipart/form-data">
@@ -59,6 +60,10 @@
         <input type="file" name="image" id="imageInput">
         <button type="button" onclick="uploadImage()">Submit</button>
     </form>
+
+    <div id="uploadedImageContainer">
+        <img id="uploadedImage" src="" alt="Uploaded Image" style="display: none;">
+    </div>
 
     <script>
 
@@ -70,9 +75,16 @@
                 // Update HTML content with fetched sensor data
                 document.getElementById('temperature').innerText = data.Temperature;
                 document.getElementById('humidity').innerText = data.Humidity;
-                document.getElementById('soilMoisture').innerText = "0"
+                document.getElementById('soilMoistureLevel').innerText = data.SoilMoisture.MoistureLevel;
+                document.getElementById('soilMoistureStatus').innerText = data.SoilMoisture.MoistureStatus;
             })
             .catch(error => console.error('Error:', error));
+        }
+
+        function displayUploadedImage(imageURL) {
+            const uploadedImage = document.getElementById('uploadedImage');
+            uploadedImage.src = imageURL;
+            uploadedImage.style.display = 'block';  // Show the image
         }
 
         function uploadImage() {
