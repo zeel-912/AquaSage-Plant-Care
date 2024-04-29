@@ -11,10 +11,9 @@ firebase_admin.initialize_app(cred, {'databaseURL': 'https://dht11-c18dd-default
 
 # Global variable for plant health
 plant_health = "Unknown"
-
 def fetch_sensor_data():
     try:
-        ref = db.reference('/DHT_11')  # Update the reference path
+        ref = db.reference('/')  # Update the reference path
         data = ref.get()
         return data
     except Exception as e:
@@ -26,8 +25,7 @@ def fetch_sensor_data():
 def get_sensor_data():
     data = fetch_sensor_data()
     return jsonify(data)
-data=fetch_sensor_data()
-print(data)
+
 # Function to call the Google Cloud Function for image processing
 def process_image(image_file):
     # Replace 'cloud_function_url' with your actual Cloud Function URL
