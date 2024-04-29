@@ -6,7 +6,7 @@ import requests
 app = Flask(__name__)
 
 # Initialize Firebase app
-cred = credentials.Certificate("/Users/zeelpatel/Desktop/Final_year_project/flask_app/src/JSON/dht11-c18dd-firebase-adminsdk-gvq2q-3d5bffde0e.json")
+cred = credentials.Certificate("JSON/dht11-c18dd-firebase-adminsdk-gvq2q-3d5bffde0e.json")
 firebase_admin.initialize_app(cred, {'databaseURL': 'https://dht11-c18dd-default-rtdb.firebaseio.com'})
 
 # Global variable for plant health
