@@ -81,6 +81,3 @@ def upload_image():
         plant_health = f"Disease: {result['class']}"
     
     return jsonify({"plant_health": plant_health})
-
-if __name__ == "__main__":
-    app.run(debug=True)
