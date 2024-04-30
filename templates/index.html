@@ -3,76 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>AquaSage Plant Care</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #98FF83; /* Corrected background color */
             text-align: center;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 600px;
         }
         h1 {
             color: #333;
+            margin-bottom: 20px;
         }
-        p {
-            color: #555;
+        .sensor-info {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .sensor-info h2 {
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        .sensor-info p {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .sensor-info span {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        span.sensor-value {
+            color: #4CAF50;
+            font-size: 24px;
         }
         input[type="file"] {
             display: none;
         }
         button {
-            background-color: #009688;
+            background-color: #4CAF50;
             color: #fff;
             border: none;
             border-radius: 4px;
-            padding: 10px 20px;
+            padding: 14px 40px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 10px;
+            font-size: 16px; 
+            outline: none; /* Remove default outline */
         }
         button:hover {
-            background-color: #00796b;
+            background-color: #45a049;
         }
         label {
             display: inline-block;
-            background-color: #009688;
+            background-color: #4CAF50;
             color: #fff;
             border-radius: 4px;
-            padding: 10px 20px;
+            padding: 14px 20px; 
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 10px;
+            font-size: 16px; 
         }
         label:hover {
-            background-color: #00796b;
+            background-color: #45a049;
+        }
+        #uploadedImageContainer {
+            margin-top: 20px;
+            text-align: center; 
+        }
+        #uploadedImage {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px; 
+            border-radius: 6px;
+            display: block; 
+            margin: 0 auto; 
+        }
+        .loading {
+            display: none;
+            margin-top: 10px;
+            color: #888;
         }
     </style>
 </head>
 <body>
-    <h1>{{ title }}</h1>
-    <p>Temperature: <span id="temperature"></span></p>
-    <p>Humidity: <span id="humidity"></span></p>
-    <p>Soil Moisture Status: <span id="soilMoistureStatus"></span></p>
-    <p>Plant Health: <span id="plantHealth">{{ plant_health }}</span></p>
-    
-    <form id="imageForm" enctype="multipart/form-data">
-        <label for="imageInput">Upload Image</label>
-        <input type="file" name="image" id="imageInput">
-        <button type="button" onclick="uploadImage()">Submit</button>
-    </form>
+    <div class="container">
+        <h1>AquaSage Plant Care</h1>
+        <div class="sensor-info">
+            <h2>Sensor Information</h2>
+            <p>Temperature: <span class="sensor-value" id="temperature"></span> </p>
+            <p>Humidity: <span class="sensor-value" id="humidity"></span> </p>
+            <p>Soil Moisture Status: <span class="sensor-value" id="soilMoistureStatus"></span></p>
+            <p>Plant Health: <span class="sensor-value" id="plantHealth">{{ plant_health }}</span></p>
+        </div>
+        
+        <form id="imageForm" enctype="multipart/form-data">
+            <label for="imageInput">Upload Image</label>
+            <input type="file" name="image" id="imageInput" onchange="previewImage(event)">
+            <button type="button" onclick="uploadImage()">Submit</button>
+            <span class="loading">Uploading...</span>
+        </form>
 
-    <div id="uploadedImageContainer">
-        <img id="uploadedImage" src="" alt="Uploaded Image" style="display: none;">
+        <div id="uploadedImageContainer">
+            <img id="uploadedImage" src="" alt="Uploaded Image" style="display: none;">
+        </div>
     </div>
 
     <script>
-
-        // Function to update sensor data in real-time
         function updateSensorData() {
-            fetch('/get_sensor_data')  // Endpoint to fetch sensor data
+            fetch('/get_sensor_data')  
             .then(response => response.json())
             .then(data => {
-                // Update HTML content with fetched sensor data
-                document.getElementById('temperature').innerText = data.DHT_11.Temperature + " °C";;
+                document.getElementById('temperature').innerText = data.DHT_11.Temperature + " °C";
                 document.getElementById('humidity').innerText = data.DHT_11.Humidity + " %";
                 document.getElementById('soilMoistureStatus').innerText = data.SoilMoisture.MoistureStatus;
             })
@@ -82,11 +138,13 @@
         function displayUploadedImage(imageURL) {
             const uploadedImage = document.getElementById('uploadedImage');
             uploadedImage.src = imageURL;
-            uploadedImage.style.display = 'block';  // Show the image
+            uploadedImage.style.display = 'block';
         }
 
         function uploadImage() {
-            var formData = new FormData(document.getElementById('imageForm'));
+            const formData = new FormData(document.getElementById('imageForm'));
+            const loadingIndicator = document.querySelector('.loading');
+            loadingIndicator.style.display = 'inline'; // Show loading indicator
             fetch('/upload_image', {
                 method: 'POST',
                 body: formData
@@ -94,8 +152,24 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('plantHealth').innerText = data.plant_health;
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+            });
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                const imageURL = reader.result;
+                displayUploadedImage(imageURL);
+            };
+
+            reader.readAsDataURL(file);
         }
 
         setInterval(updateSensorData, 5000);
