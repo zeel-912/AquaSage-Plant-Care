@@ -72,8 +72,8 @@
             .then(response => response.json())
             .then(data => {
                 // Update HTML content with fetched sensor data
-                document.getElementById('temperature').innerText = data.DHT_11.Temperature;
-                document.getElementById('humidity').innerText = data.DHT_11.Humidity;
+                document.getElementById('temperature').innerText = data.DHT_11.Temperature + " °C";;
+                document.getElementById('humidity').innerText = data.DHT_11.Humidity + " %";
                 document.getElementById('soilMoistureStatus').innerText = data.SoilMoisture.MoistureStatus;
             })
             .catch(error => console.error('Error:', error));
