@@ -51,7 +51,6 @@
     <h1>{{ title }}</h1>
     <p>Temperature: <span id="temperature"></span></p>
     <p>Humidity: <span id="humidity"></span></p>
-    <p>Soil Moisture Level: <span id="soilMoistureLevel"></span></p>
     <p>Soil Moisture Status: <span id="soilMoistureStatus"></span></p>
     <p>Plant Health: <span id="plantHealth">{{ plant_health }}</span></p>
     
@@ -75,7 +74,6 @@
                 // Update HTML content with fetched sensor data
                 document.getElementById('temperature').innerText = data.DHT_11.Temperature;
                 document.getElementById('humidity').innerText = data.DHT_11.Humidity;
-                document.getElementById('soilMoistureLevel').innerText = data.SoilMoisture.MoistureLevel;
                 document.getElementById('soilMoistureStatus').innerText = data.SoilMoisture.MoistureStatus;
             })
             .catch(error => console.error('Error:', error));
