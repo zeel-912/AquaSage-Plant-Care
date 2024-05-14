@@ -6,7 +6,7 @@ import requests
 app = Flask(__name__)
 
 # Initialize Firebase app
-cred = credentials.Certificate("JSON/dht11-c18dd-firebase-adminsdk-gvq2q-3d5bffde0e.json")
+cred = credentials.Certificate("/Users/zeelpatel/Desktop/Final_year_project/flask_app/src/JSON/dht11-c18dd-firebase-adminsdk-gvq2q-3d5bffde0e.json")
 firebase_admin.initialize_app(cred, {'databaseURL': 'https://dht11-c18dd-default-rtdb.firebaseio.com'})
 
 # Global variable for plant health
@@ -40,21 +40,19 @@ def calculate_plant_health(data, image_uploaded):
         temperature = data.get('temperature', 0)
         humidity = data.get('humidity', 0)
         
-        # Check if temperature goes above or below threshold
-        if temperature > 30 or temperature < 10:
-            # Trigger disease detection if an image is uploaded
-            if image_uploaded:
-                # Call Cloud Function for disease detection
-                result = process_image(upload_image)
-                if result['class'] != 'Tomato_healthy':
-                    return f"Disease: {result['class']}"
+        
+        if image_uploaded:
+            # Call Cloud Function for disease detection
+            result = process_image(upload_image)
+            
+            return f"Disease: {result['class']}"
         
         # Calculate plant health based on other factors (e.g., humidity)
-        if temperature > 25 and humidity > 60:
-            return "Healthy"
+        
+        return "Unknown"
     
-    # If sensor data is not available or no disease is detected, return "Unknown"
-    return "Unknown"
+
+
 
 @app.route('/')
 def index():
@@ -74,8 +72,8 @@ def upload_image():
     result = process_image(uploaded_image)
     
     # Update plant_health variable if disease is detected
-    if result['class'] != 'Tomato_healthy':
-        global plant_health
-        plant_health = f"Disease: {result['class']}"
+    
+    global plant_health
+    plant_health = f"Disease: {result['class']}"
     
     return jsonify({"plant_health": plant_health})
