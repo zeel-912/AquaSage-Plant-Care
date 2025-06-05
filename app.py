@@ -35,21 +35,24 @@ def process_image(image_file):
     return response.json()
 
 # Function to calculate plant health
-def calculate_plant_health(data, image_uploaded):
-    if data:
-        temperature = data.get('temperature', 0)
-        humidity = data.get('humidity', 0)
-        
-        
-        if image_uploaded:
-            # Call Cloud Function for disease detection
-            result = process_image(upload_image)
-            
-            return f"Disease: {result['class']}"
-        
-        # Calculate plant health based on other factors (e.g., humidity)
-        
+def calculate_plant_health(data, image_file=None):
+    """Return a human readable plant health string."""
+    if not data:
         return "Unknown"
+
+    temperature = data.get('temperature', 0)
+    humidity = data.get('humidity', 0)
+
+    if image_file is not None:
+        # Call Cloud Function for disease detection
+        result = process_image(image_file)
+        return f"Disease: {result['class']}"
+
+    # Simple heuristic based on the sensor data
+    if humidity < 30 or temperature > 35:
+        return "Unhealthy"
+
+    return "Healthy"
     
 
 
@@ -57,10 +60,8 @@ def calculate_plant_health(data, image_uploaded):
 @app.route('/')
 def index():
     data = fetch_sensor_data()
-    image_uploaded = False  # Update this based on whether an image is uploaded
-    
     global plant_health
-    plant_health = calculate_plant_health(data, image_uploaded)
+    plant_health = calculate_plant_health(data)
     
     return render_template('index.html', title='AquaSage Plant Care Solution', data=data, plant_health=plant_health)
 
